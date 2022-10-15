@@ -1,19 +1,29 @@
-input.onfocus = function () {
-  browsers.style.display = 'block';
-  input.style.borderRadius = "5px 5px 0 0";  
+import {refs} from './js/query';
+import {onFormInputChangeHandler} from './js/query';
+import debounce from 'lodash.debounce';
+
+
+//console.log(refs.filterInput);
+//console.log(refs.inputList);
+
+refs.filterInput.addEventListener('input', debounce(onFormInputChangeHandler,500));
+
+refs.filterInput.onfocus = function () {
+  refs.inputList.style.display = 'block';
+  refs.filterInput.style.borderRadius = "5px 5px 0 0";  
 };
-for (let option of browsers.options) {
+for (let option of refs.inputList.options) {
   option.onclick = function () {
-    input.value = option.value;
-    browsers.style.display = 'none';
-    input.style.borderRadius = "5px";
+    refs.filterInput.value = option.value;
+    refs.inputList.style.display = 'none';
+    refs.filterInput.style.borderRadius = "5px";
   }
 };
 
-input.oninput = function() {
+refs.filterInput.oninput = function() {
   currentFocus = -1;
-  var text = input.value.toUpperCase();
-  for (let option of browsers.options) {
+  var text = refs.filterInput.value.toUpperCase();
+  for (let option of refs.inputList.options) {
     if(option.value.toUpperCase().indexOf(text) > -1){
       option.style.display = "block";
   }else{
@@ -22,20 +32,20 @@ input.oninput = function() {
   };
 }
 var currentFocus = -1;
-input.onkeydown = function(e) {
+refs.filterInput.onkeydown = function(e) {
   if(e.keyCode == 40){
     currentFocus++
-   addActive(browsers.options);
+   addActive(refs.inputList.options);
   }
   else if(e.keyCode == 38){
     currentFocus--
-   addActive(browsers.options);
+   addActive(refs.inputList.options);
   }
   else if(e.keyCode == 13){
     e.preventDefault();
         if (currentFocus > -1) {
           /*and simulate a click on the "active" item:*/
-          if (browsers.options) browsers.options[currentFocus].click();
+          if (refs.inputList.options) refs.inputList.options[currentFocus].click();
         }
   }
 }
@@ -52,3 +62,4 @@ function addActive(x) {
       x[i].classList.remove("active");
     }
   }
+
